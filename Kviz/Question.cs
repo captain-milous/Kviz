@@ -50,31 +50,28 @@ namespace Kviz
             RightAnswer = ra;
         }
 
-        public void addAnswer(string answ)
+        public void AddAnswer(string answ)
         {
             Answers.Add(answ);
+        }
+        public void RemoveAnswer(string answ)
+        {
+            try
+            {
+                Answers.Remove(answ);
+            } catch(Exception ex) 
+            { 
+                Console.WriteLine(ex);
+            }
         }
 
         public override string ToString()
         {
-            //return $"Interrogator: {Interrogator}, Answers: {Answers}, RightAnswer: {RightAnswer}";
             string output = Interrogator + "\n\n";
             for (int i = 0; i < Answers.Count(); i++)
             {
                 int j = i + 1;
                 output = output + j + ". " + Answers[i] + "\n";
-            }
-            output = output + "\n";
-            return output;
-        }
-
-        public string AskQuestion()
-        {
-            string output = Interrogator+ "\n\n";
-            for(int i = 0; i < Answers.Count();i++)
-            {
-                int j = i + 1;
-                output = output+j+". " + Answers[i]+ "\n";
             }
             output = output + "\n";
             return output;

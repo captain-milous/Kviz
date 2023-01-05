@@ -44,10 +44,6 @@ namespace Kviz
                 Console.WriteLine(ex.Message);
             }
             #endregion
-            /*
-            Question test = new Question("Co dostanu za známku?", new List<string> { "Jedničku","Dvojku","Trojku","Čtyřku","Pětku"}, 0);
-            Console.WriteLine(test.AskQuestion());
-            */
             int input = 0;
             bool run = true;
             int strike = 0;
@@ -64,7 +60,6 @@ namespace Kviz
                 }
                 catch (Exception e)
                 {
-                    //throw new Exception("Zadaná Hodnota musí být integer!");
                     Console.WriteLine("Zadaná Hodnota musí být integer!");
                     input = 0;
                 }
@@ -181,7 +176,7 @@ namespace Kviz
                 switch (input)
                 {
                     case 1:
-                        List<Question> kviz = ChooseQuiz(kvizy);
+                        Quiz kviz = ChooseQuiz(kvizy);
                         PlayQuiz(kviz);
                         break;
                     case 2:
@@ -237,7 +232,7 @@ namespace Kviz
                 switch (input)
                 {
                     case 1:
-                        List<Question> kviz = ChooseQuiz(kvizy);
+                        Quiz kviz = ChooseQuiz(kvizy);
                         PlayQuiz(kviz);
                         break;
                     case 2:
@@ -261,18 +256,18 @@ namespace Kviz
             }          
         }
 
-        static void PlayQuiz(List<Question> quiz)
+        static void PlayQuiz(Quiz quiz)
         {
             int pocetSpravnych = 0;
             Console.WriteLine();
             Console.WriteLine("----------------------------------------------------------------------------------");
             Console.WriteLine();
-            for (int i = 0;i < quiz.Count;i++) 
+            for (int i = 0;i < quiz.Questions.Count;i++) 
             { 
                 int j = i + 1;
                 int input = 0;
                 Console.WriteLine();
-                Console.Write(j+". otázka: " + quiz[i].AskQuestion());
+                Console.Write(j+". otázka: " + quiz.Questions[i]);
                 Console.Write("Vaše odpověď: ");
                 try
                 {
@@ -284,24 +279,24 @@ namespace Kviz
                     input = 0;
                 }
                 Console.WriteLine();
-                if (input - 1 == quiz[i].RightAnswer)
+                if (input - 1 == quiz.Questions[i].RightAnswer)
                 {
                     Console.WriteLine("Správně!");
                     pocetSpravnych++;
                 }
                 else
                 {
-                    Console.WriteLine("Špatně. Správná odpověď byla " + quiz[i].Answers[quiz[i].RightAnswer]);
+                    Console.WriteLine("Špatně. Správná odpověď byla " + quiz.Questions[i].Answers[quiz.Questions[i].RightAnswer]);
                 }
             }
-            double procenta = 100 / quiz.Count() * pocetSpravnych;
+            double procenta = 100 / quiz.Questions.Count() * pocetSpravnych;
             Console.WriteLine();
             Console.WriteLine("Dokončil/a jste Celý kvíz.");
-            Console.WriteLine("Počet správných odpovědí: "+pocetSpravnych+"/"+ quiz.Count()+" ("+procenta+"%)");
+            Console.WriteLine("Počet správných odpovědí: "+pocetSpravnych+"/"+ quiz.Questions.Count()+" ("+procenta+"%)");
             Console.WriteLine();
             Console.WriteLine("----------------------------------------------------------------------------------");
         }
-        static List<Question> ChooseQuiz(List<String> kvizy)
+        static Quiz ChooseQuiz(List<String> kvizy)
         {
             Console.WriteLine();
             Console.WriteLine("Aktivní kvízy: ");
@@ -313,7 +308,7 @@ namespace Kviz
                 i++;
             }            
             int input = 0;
-            List<Question> output = new List<Question>();
+            Quiz output = new Quiz();
             bool run = true;
             while (run)
             {
@@ -366,14 +361,14 @@ namespace Kviz
             return nazvyKvizu; 
         }   
         
-        static List<Question> ImportQuiz(string nazev)
+        static Quiz ImportQuiz(string nazev)
         {
-            List<Question> quiz = new List<Question>();
+            Quiz quiz = new Quiz();
             nazev = "C:\\Users\\milda\\source\\repos\\PV\\Kviz\\Kviz\\bin\\Debug\\net6.0\\kvízy\\" + nazev + ".json";
             try
             {
                 string jsonString = File.ReadAllText(nazev);
-                quiz = JsonSerializer.Deserialize<List<Question>>(jsonString);
+                quiz = JsonSerializer.Deserialize<Quiz>(jsonString);
                 Console.WriteLine();
                 Console.WriteLine("Kvíz byl úspěšně načtený.");
             } catch(Exception e)
@@ -421,10 +416,10 @@ namespace Kviz
                         CreateQuiz();
                         break;
                     case 3:                        
-                        EditQuiz("");
+                        //EditQuiz();
                         break;
                     case 4:
-                        DeleteQuiz("");
+                        //DeleteQuiz();
                         break;
                     case 5:
                         run = false;
@@ -502,10 +497,10 @@ namespace Kviz
                 }
             }
             run = true;
-            List<Question> newQuiz = new List<Question>();
+            Quiz newQuiz = new Quiz(quizName);
             while (run)
             {                
-                newQuiz.Add(AddQuestion());
+                newQuiz.AddQuestion(NewQuestion());
                 Console.WriteLine();
                 Console.WriteLine("Chcete přidat dalsší otázku do vašeho kvízu? ");
                 Console.WriteLine("1 - ANO\n2 - NE");
@@ -523,16 +518,16 @@ namespace Kviz
                     run = false;
                 }
             }
-            SaveQuiz(quizName, newQuiz);
+            SaveQuiz(newQuiz);
         }
 
-        static void SaveQuiz(string quizName, List<Question> quiz)
+        static void SaveQuiz(Quiz quiz)
         {
             try
             {
                 string jsonQuiz = JsonSerializer.Serialize(quiz);
-                quizName = "C:\\Users\\milda\\source\\repos\\PV\\Kviz\\Kviz\\bin\\Debug\\net6.0\\kvízy\\" + quizName + ".json";
-                File.WriteAllText(quizName, jsonQuiz);
+                string path = "C:\\Users\\milda\\source\\repos\\PV\\Kviz\\Kviz\\bin\\Debug\\net6.0\\kvízy\\" + quiz.Name + ".json";
+                File.WriteAllText(path, jsonQuiz);
                 Console.WriteLine();
                 Console.WriteLine("Kvíz byl úspěšně uložen.");
             } catch (Exception e)
@@ -540,7 +535,7 @@ namespace Kviz
                 Console.WriteLine(e.ToString());
             }           
         }
-        static Question AddQuestion()
+        static Question NewQuestion()
         {
             Question question = new Question();
             bool run = true;
@@ -697,7 +692,7 @@ namespace Kviz
                 run = true;
                 Console.WriteLine();
                 Console.WriteLine("----------------------------------------------------------------------------------");
-                Console.WriteLine(question.AskQuestion());               
+                Console.WriteLine(question);               
                 Console.WriteLine();
                 Console.WriteLine("Je celá otázka správně? ");
                 Console.WriteLine("1 - ANO\n2 - NE");
@@ -718,12 +713,12 @@ namespace Kviz
             return question;
         }
         //Still in progress..
-        static void EditQuiz(string quizName)
+        static void EditQuiz(Quiz quiz)
         {
             Console.WriteLine("Still in progress..");
         }
         //Still in progress..
-        static void DeleteQuiz(string quizName)
+        static void DeleteQuiz(Quiz quiz)
         {
             Console.WriteLine("Still in progress..");
         }
