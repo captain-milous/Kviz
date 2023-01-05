@@ -351,8 +351,6 @@ namespace Kviz
             {
                 string jsonString = File.ReadAllText(nazev);
                 quiz = JsonSerializer.Deserialize<Quiz>(jsonString);
-                Console.WriteLine();
-                Console.WriteLine("Kvíz byl úspěšně načtený.");
             } catch(Exception e)
             {
                 Console.WriteLine(e.Message);
@@ -577,10 +575,10 @@ namespace Kviz
                         Console.WriteLine(e);
                         input = 0;
                     }
-                    if (input < 2 || input > 6)
+                    if (input < 2 || input > 10)
                     {
                         Console.WriteLine();
-                        Console.WriteLine("Počet možnýcho odpovědí může být v rozmezí 2 - 6.");
+                        Console.WriteLine("Počet možnýcho odpovědí může být v rozmezí 2 - 10.");
                     }
                     else
                     {
@@ -588,6 +586,7 @@ namespace Kviz
                         numberOfAnswers = input;
                     }
                 }
+                answers = new List<string>();
                 for (int i = 0; i < numberOfAnswers; i++)
                 {
                     int j = i + 1;
@@ -706,6 +705,8 @@ namespace Kviz
             SaveQuizNames(kvizy);
             string path = "C:\\Users\\milda\\source\\repos\\PV\\Kviz\\Kviz\\bin\\Debug\\net6.0\\kvízy\\"+quiz.Name+".json";
             File.Delete(@path);
+            Console.WriteLine();
+            Console.WriteLine("Kvíz byl úspěšně smazán.");
         }
         static void SaveQuizNames(List<String> kvizy)
         {
