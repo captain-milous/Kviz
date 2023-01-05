@@ -86,7 +86,6 @@ namespace Kviz
             Console.WriteLine("----------------------------------------------------------------------------------");
             #endregion
         }
-
         static void LogIn(List<User> users)
         {
             bool run = true;
@@ -125,7 +124,6 @@ namespace Kviz
                 }
             }
         }
-
         static void Aplikace(User user, List<User> users)
         {
             if (user.Admin)
@@ -139,7 +137,6 @@ namespace Kviz
             Console.WriteLine();
             Console.WriteLine(user.Name+" byl odhlášen.");
         }
-
         static void AdminPanel(List<User> users)
         {
             List<string> kvizy = ImportNameQuizes();
@@ -195,7 +192,6 @@ namespace Kviz
             }
 
         }
-
         static void UserMenu() 
         {
             List<String> kvizy = ImportNameQuizes();
@@ -244,7 +240,6 @@ namespace Kviz
                 }
             }          
         }
-
         static void PlayQuiz(Quiz quiz)
         {
             int pocetSpravnych = 0;
@@ -327,7 +322,6 @@ namespace Kviz
             }          
             return output;
         }
-
         static List<String> ImportNameQuizes() 
         {
             string filePath = "C:\\Users\\milda\\source\\repos\\PV\\Kviz\\Kviz\\bin\\Debug\\net6.0\\NazvyKvizu.txt";
@@ -348,8 +342,7 @@ namespace Kviz
                 Console.WriteLine("An error occurred: '{0}'", e);
             }
             return nazvyKvizu; 
-        }   
-        
+        }          
         static Quiz ImportQuiz(string nazev)
         {
             Quiz quiz = new Quiz();
@@ -366,7 +359,6 @@ namespace Kviz
             }            
             return quiz;
         }
-
         static void QuizManager(List<String> kvizy)
         {
             Quiz quiz = new Quiz();
@@ -783,7 +775,7 @@ namespace Kviz
                 }
             }
         }
-        public static List<User> ImportUsers()
+        static List<User> ImportUsers()
         {
             List<User> users = new List<User>();
             try
@@ -797,16 +789,31 @@ namespace Kviz
             }
             return users;
         }
-        public static void NewUser()
+        static void SaveUsers()
         {
-
+            List<User> users = ImportUsers();
+            string jsonString = JsonSerializer.Serialize(users);
+            File.WriteAllText("users.json", jsonString);
         }
-        public static User EditUser(User user)
+        static void NewUser()
+        {
+            List<User> users = ImportUsers();
+            bool run = true;
+            int input = 0;
+            User user = new User();
+            while (run)
+            {
+                Console.WriteLine("In progress..");
+                run = false;
+            }
+            SaveUsers();
+        }
+        static User EditUser(User user)
         {
             Console.WriteLine("In progress..");
             return user;
         }
-        public static void RemoveUser(User user)
+        static void RemoveUser(User user)
         {
             Console.WriteLine("In progress..");
         }
