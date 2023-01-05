@@ -32,18 +32,7 @@ namespace Kviz
             File.WriteAllText("users.json", jsonString);
             */
             #endregion            
-            #region Braní uživatelů z user.json
-            List<User> users = new List<User>();
-            try
-            {
-                string jsonString = File.ReadAllText("users.json");
-                users = JsonSerializer.Deserialize<List<User>>(jsonString);                
-            }
-            catch (System.NotSupportedException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            #endregion
+            List<User> users = ImportUsers();
             int input = 0;
             bool run = true;
             int strike = 0;
@@ -380,12 +369,14 @@ namespace Kviz
 
         static void QuizManager(List<String> kvizy)
         {
+            Quiz quiz = new Quiz();
             int input = 0;
             bool run = true;
             int strike = 0;
             int maxStrike = 3;
             while (run)
             {
+                kvizy = ImportNameQuizes();
                 Console.WriteLine();
                 Console.WriteLine("Správce Kvízů\n1 - Seznam Kvízů\n2 - Vytvořit kvíz\n3 - Editovat kvíz\n4 - Smazat kvíz\n5 - Zpět do Admin Panelu");
                 Console.Write("Vyberte možnost: ");
@@ -415,11 +406,13 @@ namespace Kviz
                     case 2:
                         CreateQuiz();
                         break;
-                    case 3:                        
-                        //EditQuiz();
+                    case 3:
+                        quiz = ChooseQuiz(kvizy);
+                        EditQuiz(quiz);
                         break;
                     case 4:
-                        //DeleteQuiz();
+                        quiz = ChooseQuiz(kvizy);
+                        DeleteQuiz(quiz);
                         break;
                     case 5:
                         run = false;
@@ -441,7 +434,6 @@ namespace Kviz
                 }
             }
         }
-
         static void CreateQuiz()
         {
             List<string> kvizy = ImportNameQuizes();
@@ -520,7 +512,6 @@ namespace Kviz
             }
             SaveQuiz(newQuiz);
         }
-
         static void SaveQuiz(Quiz quiz)
         {
             try
@@ -711,24 +702,24 @@ namespace Kviz
                 }
             }
             return question;
-        }
-        //Still in progress..
+        }    
         static void EditQuiz(Quiz quiz)
         {
             Console.WriteLine("Still in progress..");
         }
-        //Still in progress..
         static void DeleteQuiz(Quiz quiz)
         {
-            Console.WriteLine("Still in progress..");
+            List<String> kvizy = ImportNameQuizes();
+            kvizy.Remove(quiz.Name);
+            SaveQuizNames(kvizy);
+            string path = "C:\\Users\\milda\\source\\repos\\PV\\Kviz\\Kviz\\bin\\Debug\\net6.0\\kvízy\\"+quiz.Name+".json";
+            File.Delete(@path);
         }
-
         static void SaveQuizNames(List<String> kvizy)
         {
             string filePath = "C:\\Users\\milda\\source\\repos\\PV\\Kviz\\Kviz\\bin\\Debug\\net6.0\\NazvyKvizu.txt";
             File.WriteAllLines(filePath, kvizy);
         }
-
         static void UserManager(List<User> users)
         {
             int input = 0;
@@ -764,7 +755,7 @@ namespace Kviz
                         Console.WriteLine();
                         break;
                     case 2:
-                        Console.WriteLine("Still in progress..");
+                        NewUser();
                         break;
                     case 3:
                         Console.WriteLine("Still in progress..");
@@ -791,6 +782,33 @@ namespace Kviz
                         break;
                 }
             }
+        }
+        public static List<User> ImportUsers()
+        {
+            List<User> users = new List<User>();
+            try
+            {
+                string jsonString = File.ReadAllText("users.json");
+                users = JsonSerializer.Deserialize<List<User>>(jsonString);
+            }
+            catch (System.NotSupportedException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return users;
+        }
+        public static void NewUser()
+        {
+
+        }
+        public static User EditUser(User user)
+        {
+            Console.WriteLine("In progress..");
+            return user;
+        }
+        public static void RemoveUser(User user)
+        {
+            Console.WriteLine("In progress..");
         }
 
 
