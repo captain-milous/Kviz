@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Kviz
 {
-    internal class User
+    public class User
     {
         private string name;
         private string password;

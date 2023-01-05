@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Kviz
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
