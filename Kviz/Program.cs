@@ -354,9 +354,8 @@ namespace Kviz
             int maxStrike = 3;
             while (run)
             {
-                
                 Console.WriteLine();
-                Console.WriteLine("Správce Kvízů\n1 - Vypsat celý kvíz se všemi otázkami\n2 - Změnit název\n3 - Přidat otázku/y\n4 - Odebrat otázku\n5 - Zpět do Správce Kvízů");
+                Console.WriteLine("Správce Kvízů\n1 - Seznam Kvízů\n2 - Vytvořit kvíz\n3 - Editovat kvíz\n4 - Smazat kvíz\n5 - Zpět do Admin Panelu");
                 Console.Write("Vyberte možnost: ");
                 try
                 {
@@ -370,46 +369,28 @@ namespace Kviz
                 switch (input)
                 {
                     case 1:
+                        List<String> kvizy = ImportNameQuizes();
+                        int i = 1;
                         Console.WriteLine();
-                        Console.WriteLine(quiz.ToString());
+                        Console.WriteLine("Seznam aktivních kvízů.");
+                        Console.WriteLine();
+                        foreach (var kviz in kvizy)
+                        {
+                            Console.WriteLine(i + ". " + kviz.ToString());
+                            i++;
+                        }
                         Console.WriteLine();
                         break;
                     case 2:
-                        #region Změnit název
-
-                        #endregion
+                        CreateQuiz();
                         break;
                     case 3:
-                        #region Přidat otázku/y
-                        run = true;
-                        while (run)
-                        {
-                            quiz.AddQuestion(NewQuestion());
-                            Console.WriteLine();
-                            Console.WriteLine("Chcete přidat další otázku do vašeho kvízu? ");
-                            Console.WriteLine("1 - ANO\n2 - NE");
-                            try
-                            {
-                                input = Convert.ToInt32(Console.ReadLine());
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Zadaná Hodnota musí být integer!");
-                                input = 0;
-                            }
-                            if (input != 1)
-                            {
-                                run = false;
-                            }
-                        }
-                        SaveQuiz(quiz);
-                        run = true;
-                        #endregion
+                        quiz = ChooseQuiz();
+                        EditQuiz(quiz);
                         break;
                     case 4:
-                        #region Odebrat kvíz
-
-                        #endregion
+                        quiz = ChooseQuiz();
+                        DeleteQuiz(quiz);
                         break;
                     case 5:
                         run = false;
@@ -508,6 +489,145 @@ namespace Kviz
                 }
             }
             SaveQuiz(newQuiz);
+        }
+        static void EditQuiz(Quiz quiz)
+        {
+            int input = 0;
+            bool run = true;
+            int strike = 0;
+            int maxStrike = 3;
+            while (run)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Editor Kvízu: " + quiz.Name + "\n1 - Vypsat celý kvíz se všemi otázkami\n2 - Změnit název\n3 - Přidat otázku/y\n4 - Odebrat otázku\n5 - Zpět do Správce Kvízů");
+                Console.Write("Vyberte možnost: ");
+                try
+                {
+                    input = Convert.ToInt32(Console.ReadLine());
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Zadaná Hodnota musí být integer!");
+                    input = 0;
+                }
+                switch (input)
+                {
+                    case 1:
+                        Console.WriteLine();
+                        Console.WriteLine(quiz.ToString());
+                        Console.WriteLine();
+                        break;
+                    case 2:
+                        #region Změnit název
+                        List<string> kvizy = ImportNameQuizes();
+                        kvizy.Remove(quiz.Name);
+                        string quizName = quiz.Name;
+                        input = 0;
+                        run = true;
+                        while (run)
+                        {
+                            Console.WriteLine();
+                            Console.Write("Zadejte název kvízu: ");
+                            try
+                            {
+                                quizName = Console.ReadLine();
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                                quizName = "invalidName";
+                            }
+                            Console.WriteLine();
+                            Console.WriteLine(quizName + " - Je tento název v pořádku? ");
+                            Console.WriteLine("1 - ANO\n2 - NE");
+                            try
+                            {
+                                input = Convert.ToInt32(Console.ReadLine());
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Zadaná Hodnota musí být integer!");
+                                input = 0;
+                            }
+                            if (input == 1)
+                            {
+                                bool duplicita = false;
+                                foreach (string key in kvizy)
+                                {
+                                    if (quizName == key)
+                                    {
+                                        duplicita = true;
+                                    }
+                                }
+                                if (!duplicita)
+                                {
+                                    quiz.Name = quizName;
+                                    SaveQuiz(quiz);
+                                    kvizy.Add(quizName);
+                                    SaveQuizNames(kvizy);
+                                    run = false;
+                                }
+                                else
+                                {
+                                    Console.WriteLine();
+                                    Console.WriteLine("Tento název byl již použit. Zadejte prosím jiný.");
+                                }
+                            }
+                        }
+                        run = true;
+                        #endregion
+                        break;
+                    case 3:
+                        #region Přidat otázku/y
+                        run = true;
+                        while (run)
+                        {
+                            quiz.AddQuestion(NewQuestion());
+                            Console.WriteLine();
+                            Console.WriteLine("Chcete přidat další otázku do vašeho kvízu? ");
+                            Console.WriteLine("1 - ANO\n2 - NE");
+                            try
+                            {
+                                input = Convert.ToInt32(Console.ReadLine());
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Zadaná Hodnota musí být integer!");
+                                input = 0;
+                            }
+                            if (input != 1)
+                            {
+                                run = false;
+                            }
+                        }
+                        SaveQuiz(quiz);
+                        run = true;
+                        #endregion
+                        break;
+                    case 4:
+                        #region Odebrat otázku
+
+                        #endregion
+                        break;
+                    case 5:
+                        run = false;
+                        break;
+                    default:
+                        Console.WriteLine();
+                        if (strike < maxStrike)
+                        {
+                            strike++;
+                            Console.WriteLine("Máte " + strike + " striků, jestli dosáhnete " + maxStrike + " striků aplikace se automaticky ukončí.");
+                            Console.WriteLine("Vyberte celé číslo z nabídky..");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Dosáhli jste " + strike + " striků. Aplikace se teď automaticky ukončí.");
+                            run = false;
+                        }
+                        break;
+                }
+            }
         }
         static void SaveQuiz(Quiz quiz)
         {
@@ -701,72 +821,6 @@ namespace Kviz
             }
             return question;
         }    
-        static void EditQuiz(Quiz quiz)
-        {
-            int input = 0;
-            bool run = true;
-            int strike = 0;
-            int maxStrike = 3;
-            while (run)
-            {
-                Console.WriteLine();
-                Console.WriteLine("Editor Kvízu: "+quiz.Name+"\n1 - Seznam Kvízů\n2 - Vytvořit kvíz\n3 - Editovat kvíz\n4 - Smazat kvíz\n5 - Zpět do Admin Panelu");
-                Console.Write("Vyberte možnost: ");
-                try
-                {
-                    input = Convert.ToInt32(Console.ReadLine());
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Zadaná Hodnota musí být integer!");
-                    input = 0;
-                }
-                switch (input)
-                {
-                    case 1:
-                        List<String> kvizy = ImportNameQuizes();
-                        int i = 1;
-                        Console.WriteLine();
-                        Console.WriteLine("Seznam aktivních kvízů.");
-                        Console.WriteLine();
-                        foreach (var kviz in kvizy)
-                        {
-                            Console.WriteLine(i + ". " + kviz.ToString());
-                            i++;
-                        }
-                        Console.WriteLine();
-                        break;
-                    case 2:
-                        CreateQuiz();
-                        break;
-                    case 3:
-                        quiz = ChooseQuiz();
-                        EditQuiz(quiz);
-                        break;
-                    case 4:
-                        quiz = ChooseQuiz();
-                        DeleteQuiz(quiz);
-                        break;
-                    case 5:
-                        run = false;
-                        break;
-                    default:
-                        Console.WriteLine();
-                        if (strike < maxStrike)
-                        {
-                            strike++;
-                            Console.WriteLine("Máte " + strike + " striků, jestli dosáhnete " + maxStrike + " striků aplikace se automaticky ukončí.");
-                            Console.WriteLine("Vyberte celé číslo z nabídky..");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Dosáhli jste " + strike + " striků. Aplikace se teď automaticky ukončí.");
-                            run = false;
-                        }
-                        break;
-                }
-            }
-        }
         static void DeleteQuiz(Quiz quiz)
         {
             List<String> kvizy = ImportNameQuizes();

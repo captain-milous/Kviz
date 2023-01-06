@@ -9,12 +9,18 @@ namespace Kviz
     internal class Quiz
     {
         private string name;
+        private User autor;
         private List<Question> questions = new List<Question>();
 
         public string Name 
         { 
             get { return name; } 
             set { name = value; }
+        }
+        public User Autor
+        {
+            get { return autor; }
+            set { autor = value; }
         }
         public List<Question> Questions
         {
@@ -25,16 +31,19 @@ namespace Kviz
         public Quiz() 
         {
             Name = "NoName";
+            Autor = new User();
             Questions = new List<Question>();
         }
         public Quiz(string name)
         {
             Name = name;
+            Autor = new User();
             Questions = new List<Question>();
         }
-        public Quiz(string name, List<Question> questions)
+        public Quiz(string name, User autor, List<Question> questions)
         {
             Name = name;
+            Autor = autor;
             Questions = questions;
         }
 
@@ -56,7 +65,7 @@ namespace Kviz
 
         public override string ToString()
         {
-            string output = "Kvíz " + Name + "\n\n----------------------------------------------------------------------------------\n";
+            string output = "Kvíz " + Name + "\nAutor: "+Autor+"\n\n----------------------------------------------------------------------------------\n";
             for(int i = 0; i < questions.Count;i++)
             {
                 int j = i + 1;

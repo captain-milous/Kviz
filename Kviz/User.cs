@@ -33,7 +33,7 @@ namespace Kviz
 
         public User()
         {
-            Name = "";
+            Name = "Nobody";
             Password = "";
             Admin = false;
         }
