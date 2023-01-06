@@ -622,7 +622,7 @@ namespace Kviz
                         Console.WriteLine(e);
                         answer = "invalid";
                     }
-                    Console.WriteLine();
+                    answers.Add(answer);
                 }
                 question.Answers = answers;
                 #endregion
