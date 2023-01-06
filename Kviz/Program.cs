@@ -966,12 +966,103 @@ namespace Kviz
         {
             List<User> users = ImportUsers();
             bool run = true;
+            string stringInput = "";
             int input = 0;
             User user = new User();
             while (run)
             {
-                Console.WriteLine("In progress..");
-                run = false;
+                Console.WriteLine();
+                Console.Write("Zadejte přihlašovací jméno nového uživatele: ");
+                try
+                {
+                    stringInput = Console.ReadLine();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    stringInput = "invalidName";
+                }
+                Console.WriteLine();
+                Console.WriteLine(stringInput + " - Je tento název v pořádku? ");
+                Console.WriteLine("1 - ANO\n2 - NE");
+                try
+                {
+                    input = Convert.ToInt32(Console.ReadLine());
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Zadaná Hodnota musí být integer!");
+                    input = 0;
+                }
+                if (input == 1)
+                {
+                    bool duplicita = false;
+                    for (int i = 0; i < users.Count; i++)
+                    {
+                        if (stringInput == users[i].Name)
+                        {
+                            duplicita = true;
+                        }
+                    }
+                    if (!duplicita)
+                    {
+                        user.Name = stringInput;
+                        run = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Tento username byl již použit. Zadejte prosím jiný.");
+                    }
+                }
+            }
+            run = true;
+            while (run)
+            {
+                Console.WriteLine();
+                Console.Write("Zadejte přihlašovací heslo nového uživatele: ");
+                try
+                {
+                    stringInput = Console.ReadLine();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    stringInput = "invalidName";
+                }
+                Console.WriteLine();
+                Console.WriteLine(stringInput + " - Je tento název v pořádku? ");
+                Console.WriteLine("1 - ANO\n2 - NE");
+                try
+                {
+                    input = Convert.ToInt32(Console.ReadLine());
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Zadaná Hodnota musí být integer!");
+                    input = 0;
+                }
+                if (input == 1)
+                {
+                    user.Password = stringInput;
+                    run = false;
+                }
+            }
+            Console.WriteLine();
+            Console.WriteLine("Je tento uživatel adminem? ");
+            Console.WriteLine("1 - ANO\n2 - NE");
+            try
+            {
+                input = Convert.ToInt32(Console.ReadLine());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Zadaná Hodnota musí být integer!");
+                input = 0;
+            }
+            if (input == 1)
+            {
+                user.Admin = true;
             }
             users.Add(user);
             SaveUsers();
