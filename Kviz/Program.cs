@@ -17,22 +17,11 @@ namespace Kviz
             Console.WriteLine("Autor: Miloš Tesař C3b");
             Console.WriteLine();
             Console.WriteLine("----------------------------------------------------------------------------------");
-            Console.WriteLine();
-            Console.WriteLine();
-            #endregion
-            #region Původní List
-            /*
-            List<User> users = new List<User>
-            {
-                new User("Admin", "Admin1", true),
-                new User("Milos", "Heslo1234"),
-                new User("Solim", "Milos69",true )
-            };
-            string jsonString = JsonSerializer.Serialize(users);
-            File.WriteAllText("users.json", jsonString);
-            */
-            #endregion            
             List<User> users = ImportUsers();
+            Console.WriteLine("Použitelné přihlášení:\n" + users[1] + "\n" + users[2]);
+            Console.WriteLine();
+            Console.WriteLine();
+            #endregion           
             int input = 0;
             bool run = true;
             int strike = 0;
@@ -55,7 +44,7 @@ namespace Kviz
                 switch (input)
                 {
                     case 1:
-                        LogIn(users);
+                        LogIn();
                         break;
                     case 2:
                         run = false;
@@ -86,8 +75,9 @@ namespace Kviz
             Console.WriteLine("----------------------------------------------------------------------------------");
             #endregion
         }
-        static void LogIn(List<User> users)
+        static void LogIn()
         {
+            List<User> users = ImportUsers();
             bool run = true;
             int strike = 0;
             int maxStrike = 3;
@@ -103,7 +93,7 @@ namespace Kviz
                 {
                     Console.WriteLine();
                     Console.WriteLine("Vitejte, " + user.Name);
-                    Aplikace(user, users);
+                    Aplikace(user);
                     run = false;
                 }
                 else
@@ -124,11 +114,11 @@ namespace Kviz
                 }
             }
         }
-        static void Aplikace(User user, List<User> users)
+        static void Aplikace(User user)
         {
             if (user.Admin)
             {
-                AdminPanel(users);
+                AdminPanel();
             } 
             else if(!user.Admin) 
             {
@@ -137,16 +127,15 @@ namespace Kviz
             Console.WriteLine();
             Console.WriteLine(user.Name+" byl odhlášen.");
         }
-        static void AdminPanel(List<User> users)
+        static void AdminPanel()
         {
-            List<string> kvizy = ImportNameQuizes();
+            List<User> users = ImportUsers();
             int input = 0;
             bool run = true;
             int strike = 0;
             int maxStrike = 3;
             while (run)
             {
-                kvizy = ImportNameQuizes();
                 Console.WriteLine();
                 Console.WriteLine("Admin Panel\n1 - Hrát Kvíz\n2 - Správce Kvízů\n3 - Správce Uživatelů\n4 - Odhlásit se");
                 Console.Write("Vyberte možnost: ");
@@ -162,11 +151,11 @@ namespace Kviz
                 switch (input)
                 {
                     case 1:
-                        Quiz kviz = ChooseQuiz(kvizy);
+                        Quiz kviz = ChooseQuiz();
                         PlayQuiz(kviz);
                         break;
                     case 2:
-                        QuizManager(kvizy);
+                        QuizManager();
                         break;
                     case 3:
                         UserManager(users);
@@ -194,14 +183,12 @@ namespace Kviz
         }
         static void UserMenu() 
         {
-            List<String> kvizy = ImportNameQuizes();
             int input = 0;
             bool run = true;
             int strike = 0;
             int maxStrike = 3;
             while (run)
             {
-                kvizy = ImportNameQuizes();
                 Console.WriteLine();
                 Console.WriteLine("MENU\n1 - Hrát Kvíz\n2 - Odhlásit se");
                 Console.Write("Vyberte možnost: ");
@@ -217,7 +204,7 @@ namespace Kviz
                 switch (input)
                 {
                     case 1:
-                        Quiz kviz = ChooseQuiz(kvizy);
+                        Quiz kviz = ChooseQuiz();
                         PlayQuiz(kviz);
                         break;
                     case 2:
@@ -280,8 +267,9 @@ namespace Kviz
             Console.WriteLine();
             Console.WriteLine("----------------------------------------------------------------------------------");
         }
-        static Quiz ChooseQuiz(List<String> kvizy)
+        static Quiz ChooseQuiz()
         {
+            List<String> kvizy = ImportNameQuizes();
             Console.WriteLine();
             Console.WriteLine("Aktivní kvízy: ");
             Console.WriteLine();
@@ -357,7 +345,7 @@ namespace Kviz
             }            
             return quiz;
         }
-        static void QuizManager(List<String> kvizy)
+        static void QuizManager()
         {
             Quiz quiz = new Quiz();
             int input = 0;
@@ -366,7 +354,7 @@ namespace Kviz
             int maxStrike = 3;
             while (run)
             {
-                kvizy = ImportNameQuizes();
+                
                 Console.WriteLine();
                 Console.WriteLine("Správce Kvízů\n1 - Seznam Kvízů\n2 - Vytvořit kvíz\n3 - Editovat kvíz\n4 - Smazat kvíz\n5 - Zpět do Admin Panelu");
                 Console.Write("Vyberte možnost: ");
@@ -382,6 +370,7 @@ namespace Kviz
                 switch (input)
                 {
                     case 1:
+                        List<String> kvizy = ImportNameQuizes();
                         int i = 1;
                         Console.WriteLine();
                         Console.WriteLine("Seznam aktivních kvízů.");
@@ -397,11 +386,11 @@ namespace Kviz
                         CreateQuiz();
                         break;
                     case 3:
-                        quiz = ChooseQuiz(kvizy);
+                        quiz = ChooseQuiz();
                         EditQuiz(quiz);
                         break;
                     case 4:
-                        quiz = ChooseQuiz(kvizy);
+                        quiz = ChooseQuiz();
                         DeleteQuiz(quiz);
                         break;
                     case 5:
